@@ -26,4 +26,6 @@ npm run lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+Versao anterior vuetify": "2.1.0

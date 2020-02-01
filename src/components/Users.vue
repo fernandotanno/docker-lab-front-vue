@@ -2,91 +2,36 @@
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
       <v-flex xs12 md12>
-        <v-card>
-          <v-card-title>Usuário</v-card-title>
-          <v-form>
-            <v-container py-0>
-              <v-layout wrap>
-                <v-flex xs12 md12>
-                  <v-text-field v-model="user.username" :counter="60" label="Nome" required></v-text-field>
-                </v-flex>
-                <v-flex xs12 md6>
-                  <v-text-field v-model="user.email" label="E-mail" required></v-text-field>
-                </v-flex>
-                <v-flex xs12 md6>
-                  <v-text-field v-model="user.password" label="Senha" type="password" required></v-text-field>
-                </v-flex>
-                <v-flex xs12 md4>
-                  <v-select v-model="user.access" :items="access" label="Nível" required></v-select>
-                </v-flex>
-                <v-flex xs12 md4>
-                  <v-checkbox v-model="user.status" label="Ativo?" required></v-checkbox>
-                </v-flex>
-                <v-flex xs12 text-xs-rigth>
-                  <v-btn class="ma-2" @click="salvar" color="success" dark>
-                    <v-icon left>mdi-check-circle-outline</v-icon>Salvar
-                  </v-btn>
-                  <v-btn class="ma-2" @click="listar" color="primary" dark>
-                    <v-icon left>mdi-check-circle-outline</v-icon>Listar
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-form>
-        </v-card>
-        <br />
-        <v-card>
-          <v-card-title>Lista de Usuários</v-card-title>
-          <v-simple-table id="listaUsers">
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">ID</th>
-                  <th class="text-left">Nome</th>
-                  <th class="text-left">Email</th>
-                  <th class="text-left">Nível</th>
-                  <th class="text-left">Ativo ?</th>
-                  <th class="text-left">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="user in users" :key="user.id">
-                  <td>{{user.id}}</td>
-                  <td>{{user.username}}</td>
-                  <td>{{user.email}}</td>
-                  <td>{{user.access}}</td>
-                  <td>{{user.status}}</td>
-                  <td>
-                    <v-btn text icon color="green" @click="carregar(user.id)">
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn text icon color="red" @click="excluir(user.id)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
-        <br />
         <template>
           <v-data-table
             :headers="headers"
             :items="usuarios"
+            :search="search"
             :items-per-page="10"
             sort-by="username"
-            class="elevation-1"
+            class="elevation-4"
           >
             <template v-slot:top>
-              <v-toolbar flat color="white">
-                <v-toolbar-title>Cadastrar Usuários</v-toolbar-title>
-                <v-divider class="mx-4" insert vertical></v-divider>
+              <v-toolbar flat color="grey lighten-4">
+                <div class="my-2">
+                  <v-btn color="blue-grey" dark large class="elevation-4">
+                    <v-icon left dark>mdi-account</v-icon>
+                    <h2>Usuários</h2>
+                  </v-btn>
+                </div>
+                <v-spacer></v-spacer>
+                <v-text-field
+                  v-model="search"
+                  append-icon="mdi-account-search-outline"
+                  label="Buscar"
+                  single-line
+                  hide-details
+                ></v-text-field>
                 <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="500px">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" dark class="ma-2" v-on="on">
-                      <v-icon left>mdi-plus</v-icon>Novo Usuário
+                      <v-icon left>mdi-account-plus</v-icon>Novo Usuário
                     </v-btn>
                   </template>
                   <v-card>
@@ -135,19 +80,26 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-space></v-space>
-                      <v-btn class="my-2" flat @click="fechar" color="red" dark>
-                        <v-icon left>mdi-close</v-icon>Cancelar
+                      <v-btn class="my-2" flat @click="fechar" color="warning" dark>
+                        <v-icon left>mdi-close-circle-outline</v-icon>Cancelar
                       </v-btn>
                       <v-btn class="my-2" @click="salvarUsuario" color="primary" dark>
-                        <v-icon left>mdi-checkbox-marked-circle</v-icon>Salvar
+                        <v-icon left>mdi-account-check</v-icon>Salvar
                       </v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
               </v-toolbar>
+              <br />
+              <h3 class="text-center">Lista de Usuários</h3>
             </template>
             <template v-slot:item.action="{ item }">
-              <v-icon small color="primary" class="mr-2" @click="editarUsuario(item)">mdi-pencil</v-icon>
+              <v-icon
+                small
+                color="primary"
+                class="mr-2"
+                @click="editarUsuario(item)"
+              >mdi-account-edit</v-icon>
               <v-icon small color="red" @click="deletarUsuario(item)">mdi-delete</v-icon>
             </template>
             <template>
@@ -176,6 +128,7 @@ export default {
 
     // dados datatable -----------
     dialog: false,
+    search: "",
     headers: [
       {
         text: "Id",
@@ -252,6 +205,7 @@ export default {
         (this.user.status = false),
         (this.id = null);
     },
+
     // methodos datatable
     listarUsuarios() {
       this.$http.get("users").then(res => {
@@ -260,7 +214,7 @@ export default {
     },
     editarUsuario(item) {
       this.indexEditar = this.usuarios.indexOf(item);
-      this.usuarioEditado = Object.assign({}, item);      
+      this.usuarioEditado = Object.assign({}, item);
       this.dialog = true;
     },
     deletarUsuario(item) {
@@ -268,10 +222,9 @@ export default {
       confirm("Confirma a exclusão do usuário?") &&
         //this.usuarios.splice(index, 1);
         this.$http
-         .delete(`users/${item.id}`)
-         .then(() => this.limpar())
-         .then(() => this.listarUsuarios());
-
+          .delete(`users/${item.id}`)
+          .then(() => this.limpar())
+          .then(() => this.listarUsuarios());
     },
     fechar() {
       this.dialog = false;
@@ -282,9 +235,17 @@ export default {
     },
     salvarUsuario() {
       if (this.indexEditar > -1) {
-        Object.assign(this.usuarios[this.indexEditar], this.usuarioEditado);
+        //Object.assign(this.usuarios[this.indexEditar], this.usuarioEditado);
+        this.$http
+          .put(`users/${this.usuarioEditado.id}`, this.usuarioEditado)
+          .then(() => this.limpar())
+          .then(() => this.listarUsuarios());
       } else {
-        this.usuarios.push(this.usuarioEditado);
+        //this.usuarios.push(this.usuarioEditado);
+        this.$http
+          .post("users", this.usuarioEditado)
+          .then(() => this.limpar())
+          .then(() => this.listarUsuarios());
       }
       this.fechar();
     }

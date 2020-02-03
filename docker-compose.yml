@@ -1,0 +1,19 @@
+version: '3'
+
+
+services:
+    app-vue:
+        container_name: app-docker-lab-front-vue
+        build: .
+        volumes:
+            - ./:/app       
+        ports:
+            - 8080:8080
+        networks: 
+            - docker-lab-frontend
+        command: ['npm', 'run', 'serve']
+
+
+networks: 
+    docker-lab-frontend:
+

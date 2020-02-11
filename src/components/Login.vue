@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="login">
     <v-content>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
@@ -10,27 +10,24 @@
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form ref="formLogin" v-model="valid" lazy-validation>
                   <v-text-field
                     id="email"
-                    label="Email"
+                    label="E-mail"
                     v-model="user.email"
+                    :rules="emailValidation"
                     prepend-icon="mdi-mail"
                     type="text"
+                    required
                   />
                   <v-text-field
                     id="password"
-                    label="Password"
+                    label="Senha"
                     v-model="user.password"
+                    :rules="passwordValidation"
                     prepend-icon="mdi-lock"
                     type="password"
-                  />
-                  <v-text-field
-                    id="access"
-                    label="Nivel"
-                    v-model="user.access"
-                    prepend-icon="mdi-lock"
-                    type="text"
+                    required
                   />
                 </v-form>
               </v-card-text>
@@ -52,38 +49,63 @@
 
 <script>
 export default {
-  created() {
-    //console.log('exec!!!')
-    // this.$http.post('users', {
-    //   username:'Teste api vue',
-    //   email: 'teste@apivue.com.br',
-    //   password: '123456',
-    //   access: 'manager'
-    // }).then(res => console.log(res))
-  },
-  data() {
-    return {
-      token: [],
-      user: {
-        email: "",
-        password: "",
-        access: ""
-      }
-    };
-  },
+  created() {},
+  data: () => ({
+    dialog: false,
+    valid: true,
+    emailValidation: [
+      v => !!v || "Obrigatório informar o e-mail!",
+      v => /.+@.+\..+/.test(v) || "E-mail inválido"
+    ],
+    passwordValidation: [
+      v => (v && v.length > 4) || "Senha deve conter mais de 4 caracteres"
+    ],
+    user: {
+      email: "",
+      password: ""
+    }
+  }),
   props: {
     source: String
   },
   methods: {
-    logar() {
-      this.$http.post("login", this.user).then(res => {
-        this.token = res.data.data.token;
-        this.$http.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
-        // this.token = res.data
-        alert(this.token);
-      });
+    logar(e) {
+      e.preventDefault();
+      this.$http
+        .post("login", this.user)
+        .then(res => {
+          const access = res.data.user.access;
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          localStorage.setItem("token", res.data.data.token);
+          // this.$http.defaults.headers.common[
+          //   "Authorization"
+          // ] = `Bearer ${token}`;
+          if (localStorage.getItem("token") != null) {
+            this.$emit("loggedIn");
+            // this.$http.defaults.headers.common[
+            //   "Authorization"
+            // ] = `Bearer ${localStorage.getItem("token")}`;
+            if (this.$route.params.nextUrl != null) {
+              this.$router.push(this.$route.params.nextUrl);
+            } else {
+              if (access === "manager") {
+                this.$router.push("dashmanager");
+              } else if (access === "seller") {
+                this.$router.push("dashseller");
+              }
+            }
+          }
+        })
+        .catch(function(error) {
+          if (error.res) {
+            alert(`Não autorizado: Email e/ou senha incorretos`);
+          }
+          alert(`Não autorizado: Email e/ou senha incorretos`);
+        });
     }
   }
 };
 </script>
 
+<style>
+</style>

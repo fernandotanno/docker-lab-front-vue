@@ -1,14 +1,18 @@
 <template>
   <v-app id="app">
-    <router-view />
+    <router-view class="app"></router-view>
+    <!-- <DashManager /> -->
   </v-app>
 </template>
 
 <script>
+// import DashManager from "@/components/manager/DashManager";
 export default {
   name: "App",
 
-  components: {},
+  components: {
+    // DashManager
+  },
 
   data: () => ({
     //

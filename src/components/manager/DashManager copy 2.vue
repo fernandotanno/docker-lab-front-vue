@@ -33,8 +33,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
-        <!-- <v-list-item @click="users" link> -->
-        <v-list-item @click="users">
+        <v-list-item @click="users" link>
           <v-list-item-icon>
             <v-icon>mdi-account</v-icon>
           </v-list-item-icon>
@@ -48,33 +47,16 @@
         <Logout v-slot:append></Logout>
       </template>
     </v-navigation-drawer>
-    <!-- <v-app-bar app color="blue-grey lighten-5" shrink-on-scroll prominent>
-        <v-spacer></v-spacer>
-        <v-toolbar-title>DashBoard - Manager</v-toolbar-title>
-        <v-spacer></v-spacer>
-    </v-app-bar>-->
 
-    <!-- <v-card class="overflow-hidden"> -->
-    <v-app-bar app absolute color="blue-grey lighten-5" dense shrink-on-scroll>
+    <v-app-bar app color="blue-grey lighten-5">
       <v-spacer></v-spacer>
       <v-toolbar-title>DashBoard - Manager</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
-    <!-- </v-card> -->
-
-    <!-- <v-container id="containerDashManager" app fill-height fluid grid-list-xl>
-      <v-layout wrap>
-        <v-flex md12 sm12 lg4>
-        <router-view class="user" name="users"></router-view>
-        </v-flex>
-      </v-layout>
-    </v-container>-->
 
     <v-content app>
       <v-container class="fill-height fluid">
         <!-- <User /> -->
-
-        <router-view name="users"></router-view>
       </v-container>
     </v-content>
   </v-app>
@@ -88,7 +70,7 @@ import Logout from "@/components/Logout";
 export default {
   components: {
     Logout
-    // User,
+    // User
   },
   data() {
     return {

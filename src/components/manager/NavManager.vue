@@ -32,12 +32,20 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list-item v-for="item in itensMenu" :key="item.title" link>
+      <!-- <v-list-item v-for="item in itensMenu" :key="item.title" @click="'{{ item.click }}'" link>
         <v-list-item-icon>
           <v-icon>{{item.icon}}</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{item.title}}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>-->
+      <v-list-item @click="users" link>
+        <v-list-item-icon>
+          <v-icon>mdi-account</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Usuários</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -55,10 +63,14 @@ export default {
   components: { Logout },
   data() {
     return {
-      itensMenu: [
-        { title: "DashBoard", icon: "mdi-view-dashboard" },
-        { title: "Usuários", icon: "mdi-account" }
-      ],
+      // itensMenu: [
+      //   {
+      //     title: "DashBoard",
+      //     icon: "mdi-view-dashboard",
+      //     click: "dashmanager"
+      //   },
+      //   { title: "Usuários", icon: "mdi-account", click: "users" }
+      // ],
       drawer: true,
       miniVariant: false,
       color: "blue",
@@ -75,7 +87,11 @@ export default {
         : undefined;
     }
   },
-  methods: {}
+  methods: {
+    users() {
+      this.$router.push({ path: "/users" });
+    }
+  }
 };
 </script>
 

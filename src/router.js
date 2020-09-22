@@ -24,11 +24,17 @@ const router = new Router({
 		{
 			path: '/dashmanager',
 			name: 'dashmanager',
-			component: DashManager,
+			components: DashManager,
 			meta: {
 				requiresAuth: true,
 				access: 'manager'
-			}
+			},
+			// children: [
+			// 	{
+			// 		path: 'users',
+			// 		component: Users
+			// 	}
+			// ],
 		},
 		{
 			path: '/dashseller',
@@ -40,11 +46,13 @@ const router = new Router({
 				requiresAuth: true,
 				access: 'seller'
 			}
-		}, {
+		}, 
+		{
 			path: '/users',
 			name: 'users',
 			components: {
 				default: Users,
+				users: Users,
 			},
 			meta: {
 				requiresAuth: true,
@@ -69,10 +77,10 @@ router.beforeEach((to, from, next) => {
 			let user = JSON.parse(localStorage.getItem('user'));
 			if (to.matched.some((record) => record.meta.access)) {
 				if (user.access == 'manager') {
-					//next({name:'dashmanager'})
+					next({name:'dashmanager'})
 					next();
 				} else if (user.access == 'seller') {
-					//next({ name: 'dashseller'})
+					next({ name: 'dashseller'})
 					next();
 				}
 			} else {
